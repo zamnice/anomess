@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAM ZAM - Anonymous Message</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Merriweather:wght@300;400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #FF6B00;
+            --secondary: #F4C430;
+            --accent: #FFE8B0;
+            --light: #F5EFE6;
+            --dark: #6F4E37;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            min-height: 100vh;
+        }
+        
+        .heading-font {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .subheading-font {
+            font-family: 'Merriweather', serif;
+        }
+        
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 16px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            transition: all 0.3s;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--dark);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a3d29;
+            transform: translateY(-2px);
+        }
+        
+        .message-item {
+            transition: background-color 0.3s;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .message-item:hover {
+            background-color: var(--accent);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .brand-pattern {
+            background-color: var(--light);
+            background-image: 
+                radial-gradient(var(--primary) 0.5px, transparent 0.5px),
+                radial-gradient(var(--primary) 0.5px, var(--light) 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.1;
+        }
+        
+        .logo-text {
+            font-family: 'Libre Baskerville', serif;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .header-bg {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="header-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="bg-white text-orange-600 p-2 rounded-lg mr-3">
+                    <i class="fas fa-envelope text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold logo-text">ZAM ZAM</h1>
+            </div>
+            <button id="adminBtn" class="bg-white text-orange-600 px-4 py-2 rounded-lg font-medium hover:bg-orange-50 transition">
+                <i class="fas fa-lock mr-2"></i>Admin
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="text-center mb-12 fade-in">
+            <div class="floating inline-block mb-6">
+                <div class="bg-white p-6 rounded-2xl shadow-xl">
+                    <div class="bg-gradient-to-r from-orange-500 to-yellow-400 text-white text-5xl p-4 rounded-xl inline-block">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+            </div>
+            <h2 class="text-4xl font-bold text-gray-800 mb-4 heading-font">Anonymous Message</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto subheading-font">Kirim pesan anonim Anda dengan mudah dan aman. Pesan akan langsung terkirim ke ZAM ZAM.</p>
+        </section>
+
+        <!-- Message Form Section -->
+        <section class="max-w-2xl mx-auto mb-16 fade-in">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden card">
+                <div class="bg-gradient-to-r from-orange-600 to-yellow-500 text-white py-4 px-6">
+                    <h3 class="text-2xl font-bold heading-font"><i class="fas fa-pen mr-3"></i>Form Pesan Anonim</h3>
+                </div>
+                <div class="p-6">
+                    <form id="messageForm">
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 mb-2 font-medium">Pesan Anda</label>
+                            <textarea 
+                                id="message" 
+                                rows="5" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
+                                placeholder="Tulis pesan anonim Anda di sini..."
+                                required
+                            ></textarea>
+                        </div>
+                        <button 
+                            type="submit" 
+                            class="w-full py-3 px-4 text-white font-bold rounded-lg btn-primary"
+                        >
+                            <i class="fas fa-paper-plane mr-2"></i>Kirim Pesan Anonim
+                        </button>
+                    </form>
+                    <p class="text-sm text-gray-500 mt-4 text-center">
+                        <i class="fas fa-shield-alt mr-2"></i>Pesan Anda benar-benar anonim dan tidak menyimpan informasi identitas Anda.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it Works Section -->
+        <section class="mb-16 fade-in">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12 heading-font">Cara Kerjanya</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-2xl shadow-lg text-center card">
+                    <div class="bg-orange-100 text-orange-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-edit text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 heading-font">Tulis Pesan</h3>
+                    <p class="text-gray-600">Ketik pesan yang ingin Anda sampaikan secara anonim.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg text-center card">
+                    <div class="bg-yellow-100 text-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-paper-plane text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 heading-font">Kirim Secara Anonim</h3>
+                    <p class="text-gray-600">Klik tombol kirim dan pesan akan terkirim tanpa menyimpan identitas Anda.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg text-center card">
+                    <div class="bg-brown-100 text-brown-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check-circle text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 heading-font">ZAM ZAM Menerima</h3>
+                    <p class="text-gray-600">ZAM ZAM akan membaca pesan Anda di dashboard admin yang aman.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Modal -->
+        <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white rounded-2xl shadow-2xl w-11/12 md:w-96 overflow-hidden fade-in">
+                <div class="bg-gradient-to-r from-orange-600 to-yellow-500 text-white py-4 px-6">
+                    <h3 class="text-2xl font-bold heading-font"><i class="fas fa-lock mr-3"></i>Admin Login</h3>
+                </div>
+                <div class="p-6">
+                    <form id="loginForm">
+                        <div class="mb-4">
+                            <label for="email" class="block text-gray-700 mb-2 font-medium">Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
+                                placeholder="Email admin"
+                                required
+                            >
+                        </div>
+                        <div class="mb-6">
+                            <label for="password" class="block text-gray-700 mb-2 font-medium">Password</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
+                                placeholder="Password"
+                                required
+                            >
+                        </div>
+                        <button 
+                            type="submit" 
+                            class="w-full py-3 px-4 text-white font-bold rounded-lg btn-primary"
+                        >
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 heading-font">Admin Dashboard</h2>
+                <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Cari pesan..." 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                    >
+                    <div class="absolute right-3 top-3.5 text-gray-400">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="bg-gradient-to-r from-orange-600 to-yellow-500 text-white py-4 px-6">
+                    <h3 class="text-2xl font-bold heading-font"><i class="fas fa-envelope-open-text mr-3"></i>Daftar Pesan</h3>
+                </div>
+                <div class="p-6">
+                    <div id="messagesList" class="space-y-4">
+                        <!-- Messages will be loaded here -->
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-envelope-open-text text-4xl mb-3"></i>
+                            <p>Belum ada pesan yang diterima</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="container mx-auto px-4 py-6 text-center text-gray-600">
+            <p class="logo-text text-lg">ZAM ZAM</p>
+            <p class="text-sm">© 2023 ZAM ZAM Anonymous Message. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Konfigurasi Apps Script (Ganti dengan URL Web App Anda)
+        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/ABCDEFG1234567890/exec';
+        
+        // DOM elements
+        const messageForm = document.getElementById('messageForm');
+        const adminBtn = document.getElementById('adminBtn');
+        const adminModal = document.getElementById('adminModal');
+        const loginForm = document.getElementById('loginForm');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const messagesList = document.getElementById('messagesList');
+        const searchInput = document.getElementById('searchInput');
+        
+        // Event: Kirim pesan
+        messageForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const messageInput = document.getElementById('message');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                try {
+                    // Kirim pesan ke Google Apps Script
+                    const response = await fetch(APP_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'addMessage',
+                            message: message
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Tampilkan notifikasi sukses
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Pesan anonim Anda telah terkirim ke ZAM ZAM.',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#FF6B00'
+                        });
+                        
+                        // Reset form
+                        messageInput.value = '';
+                    } else {
+                        throw new Error(result.message || 'Gagal mengirim pesan');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#FF6B00'
+                    });
+                }
+            }
+        });
+        
+        // Event: Buka modal admin
+        adminBtn.addEventListener('click', function() {
+            adminModal.classList.remove('hidden');
+        });
+        
+        // Event: Tutup modal saat klik di luar
+        adminModal.addEventListener('click', function(e) {
+            if (e.target === adminModal) {
+                adminModal.classList.add('hidden');
+            }
+        });
+        
+        // Event: Login admin
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                // Kirim permintaan login ke Apps Script
+                const response = await fetch(APP_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa(email + ':' + password)
+                    },
+                    body: JSON.stringify({
+                        action: 'adminLogin'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Tutup modal dan tampilkan dashboard
+                    adminModal.classList.add('hidden');
+                    document.querySelector('main > section').classList.add('hidden');
+                    document.querySelector('main > section:nth-child(3)').classList.add('hidden');
+                    adminDashboard.classList.remove('hidden');
+                    
+                    // Simpan token (jika ada)
+                    if (result.token) {
+                        localStorage.setItem('adminToken', result.token);
+                    }
+                    
+                    // Load pesan
+                    loadMessages();
+                } else {
+                    throw new Error(result.message || 'Login gagal');
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Email atau password salah.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#FF6B00'
+                });
+            }
+        });
+        
+        // Event: Logout admin
+        logoutBtn.addEventListener('click', function() {
+            adminDashboard.classList.add('hidden');
+            document.querySelector('main > section').classList.remove('hidden');
+            document.querySelector('main > section:nth-child(3)').classList.remove('hidden');
+            localStorage.removeItem('adminToken');
+        });
+        
+        // Event: Pencarian pesan
+        searchInput.addEventListener('input', function() {
+            loadMessages(this.value);
+        });
+        
+        // Fungsi untuk memuat pesan dari Google Sheets
+        async function loadMessages(searchTerm = '') {
+            try {
+                const token = localStorage.getItem('adminToken');
+                
+                const response = await fetch(`${APP_SCRIPT_URL}?action=getMessages&search=${encodeURIComponent(searchTerm)}`, {
+                    headers: {
+                        'Authorization': token ? 'Bearer ' + token : ''
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayMessages(result.messages);
+                } else {
+                    throw new Error(result.message || 'Gagal memuat pesan');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messagesList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-exclamation-circle text-4xl mb-3"></i>
+                        <p>Gagal memuat pesan. Silakan coba lagi.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Fungsi untuk menampilkan pesan
+        function displayMessages(messages) {
+            if (!messages || messages.length === 0) {
+                messagesList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-envelope-open-text text-4xl mb-3"></i>
+                        <p>Belum ada pesan yang diterima</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            messagesList.innerHTML = messages.map(msg => `
+                <div class="message-item bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-sm text-gray-500">${formatDate(msg.timestamp)}</span>
+                        <button class="text-red-500 delete-btn" data-id="${msg.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-800">${msg.message}</p>
+                    <div class="mt-3 flex justify-end">
+                        <button class="text-orange-600 copy-btn mr-3" data-message="${msg.message}">
+                            <i class="fas fa-copy mr-1"></i>Salin
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Tambahkan event listener untuk tombol hapus
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const id = this.getAttribute('data-id');
+                    
+                    try {
+                        const token = localStorage.getItem('adminToken');
+                        const response = await fetch(APP_SCRIPT_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': token ? 'Bearer ' + token : ''
+                            },
+                            body: JSON.stringify({
+                                action: 'deleteMessage',
+                                id: id
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            loadMessages(searchInput.value);
+                            Swal.fire({
+                                title: 'Dihapus!',
+                                text: 'Pesan telah dihapus.',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#FF6B00'
+                            });
+                        } else {
+                            throw new Error(result.message || 'Gagal menghapus pesan');
+                        }
+                    } catch (error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Gagal menghapus pesan.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#FF6B00'
+                        });
+                    }
+                });
+            });
+            
+            // Tambahkan event listener untuk tombol salin
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const message = this.getAttribute('data-message');
+                    navigator.clipboard.writeText(message);
+                    
+                    Swal.fire({
+                        title: 'Tersalin!',
+                        text: 'Pesan telah disalin ke clipboard.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                });
+            });
+        }
+        
+        // Fungsi untuk memformat tanggal
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Animasi fade in untuk elemen
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.fade-in').forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.2}s`;
+            });
+            
+            // Cek apakah admin sudah login
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                // Verifikasi token masih valid
+                verifyToken(token);
+            }
+        });
+        
+        // Fungsi untuk verifikasi token
+        async function verifyToken(token) {
+            try {
+                const response = await fetch(`${APP_SCRIPT_URL}?action=verifyToken`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Tampilkan dashboard jika token valid
+                    document.querySelector('main > section').classList.add('hidden');
+                    document.querySelector('main > section:nth-child(3)').classList.add('hidden');
+                    adminDashboard.classList.remove('hidden');
+                    loadMessages();
+                } else {
+                    localStorage.removeItem('adminToken');
+                }
+            } catch (error) {
+                console.error('Token verification failed:', error);
+                localStorage.removeItem('adminToken');
+            }
+        }
+    </script>
+</body>
+</html>
